@@ -1,0 +1,28 @@
+# configurations
+baseurl: http://api.marketstack.com/v1/eod
+n_historical_weeks: 52
+compare_on: close
+
+# base symbols
+symbols:
+  stocks:
+    unilever: UNA.XAMS
+    shell: RDSA.XAMS
+    # heineken: HEIA.XAMS
+    # adyen: ADYEN.XAMS
+    # ing: INGA.XAMS
+    # randstad: RAND.XAMS
+    # vopak: VPK.XAMS
+    # altice: ATC.XAMS
+    # aalberts: AALB.XAMS
+    # akzo_nobel: AKZA.XAMS
+  indices:
+    cac: FCHI.INDX
+    dax: GDAXI.INDX
+    # ftse-uk: FTSE.INDX
+    # ftse-mib: FTSEMIB.XMIL
+    # aex: AEX.INDX
+    # ibex: IBEX.INDX
+    # hsi: HSI.INDX
+    # nikkei: N225.INDX
+    # dowjones: DJI.INDX
