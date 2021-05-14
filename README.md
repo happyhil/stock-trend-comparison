@@ -20,7 +20,7 @@ $ nano secret.yaml
 
 Install the project library
 ```bash
-# pip install -e .
+$ pip install -e .
 ```
 
 ## Usage
