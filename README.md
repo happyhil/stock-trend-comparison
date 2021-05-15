@@ -47,4 +47,4 @@ By default, the following settings are applied.
 - Comparison period: last 365 days
 - Comparison on: close prices
 
-The settings are adjustable via the `config.yaml`.
+The settings are adjustable via the `config.yaml` file.
