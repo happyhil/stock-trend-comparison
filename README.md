@@ -10,7 +10,7 @@ $ virtual -p python3 venv
 $ source venv/bin/activate
 ```
 
-Stock data is derived from https://marketstack.com/'s API. In order to connect to this environment, copy the default `secret.yaml` file and enter your API key.
+Stock data is derived from https://marketstack.com/ 's API. In order to connect to this environment, copy the default `secret.yaml` file and enter your API key.
 ```bash
 $ cp secret.default.yaml secret.yaml
 $ nano secret.yaml
