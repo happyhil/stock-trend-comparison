@@ -8,7 +8,7 @@ symbols:
   stocks:
     unilever: UNA.XAMS
     shell: RDSA.XAMS
-    # heineken: HEIA.XAMS
+    heineken: HEIA.XAMS
     # adyen: ADYEN.XAMS
     # ing: INGA.XAMS
     # randstad: RAND.XAMS
@@ -19,7 +19,7 @@ symbols:
   indices:
     cac: FCHI.INDX
     dax: GDAXI.INDX
-    # ftse-uk: FTSE.INDX
+    ftse-uk: FTSE.INDX
     # ftse-mib: FTSEMIB.XMIL
     # aex: AEX.INDX
     # ibex: IBEX.INDX
