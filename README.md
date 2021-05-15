@@ -6,8 +6,8 @@ Stock Trend Comparisons is a library to compare two financial products on its pr
 
 Create a virtual environment in the root of the project. Make sure to use `python3.7` or higher.
 ```bash
-$ virtual -p python3 venv
-$ source venv/bin/activate
+virtual -p python3 venv
+source venv/bin/activate
 ```
 
 Stock data are derived from [marketstack](https://marketstack.com/)'s API. In order to connect to this environment, copy the default `secret.yaml` file and enter your API key.
