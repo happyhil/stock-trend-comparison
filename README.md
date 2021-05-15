@@ -1,8 +1,6 @@
 # Stock Trend Comparisons
 
-intro text here
-
-The default settings are a year-round comparison (last 365 days) on the indicators' close value. The settings are adjustable via the `config.yaml`.
+Stock Trend Comparisons is a library to compare two financial products on its prices over time. The tool helps to see whether two financial products are correlated, and which of the two products might be over- or under valued.
 
 ## Installation
 
@@ -12,30 +10,41 @@ $ virtual -p python3 venv
 $ source venv/bin/activate
 ```
 
-Copy the default `secret.yaml` and replace the API key.
+Copy the default `secret.yaml` file and enter the API key.
 ```bash
 $ cp secret.default.yaml secret.yaml
 $ nano secret.yaml
 ```
 
-Install the project library
+Install the project library and dependencies.
 ```bash
 $ pip install -e .
 ```
 
 ## Usage
 
-To compare to indicators, use the command `run-stock-comparator <base.symb> <comp.symb>`. For example:
+To run a comparison on two financial products, use the command `run-stock-comparator <base.symb> <comp.symb>`. For example, to compare the AEX index to the HSI index, run:
 ```bash
 $ run-stock-comparator AEX.INDX HSI.INDX
 ```
 
-Alternatively, use one of the symbol lists available in the `config.yaml`, which compares listed indicators.
+The tool will calculate the growth (as an index) between the starting- and end price for both products, the absolute difference between these growths, and the correlation between the prices of the two products over time.
+
+Alternatively, use one of the symbol lists available in the `config.yaml` file, which compares all listed products to each other. For example `stocks` or `indices`.
 ```bash
 $ run-stock-comparator indices
 ```
 
-Or just run the comparator within using its parameters. The command will use then all the available symbol lists in the `config.yaml`.
+Or run the comparator without using paramaters at all. In this case, the tool will run on a comparison all available symbols listed in the `config.yaml` file.
 ```bash
 $ run-stock-comparator
 ```
+
+## Settings
+
+By default, the following settings are applied.
+
+- Comparison period: last 365 days
+- Comparison on: close prices
+
+The settings are adjustable via the `config.yaml`.
