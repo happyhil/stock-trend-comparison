@@ -4,5 +4,4 @@ idna==2.10
 numpy==1.20.3
 PyYAML==5.4.1
 requests==2.25.1
--e git+git@github.com:happyhil/stock-trend-comparison.git@ff09db06ded4785105d6cd08f22594c3527867bb#egg=stock_trend_comparison
 urllib3==1.26.4
