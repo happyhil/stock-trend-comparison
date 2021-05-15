@@ -23,7 +23,7 @@ $ pip install -e .
 
 ## Usage
 
-To run a comparison on two financial products, use the command `run-stock-comparator <base.symb> <comp.symb>`. For example, to compare the AEX index to the HSI index, run:
+To run a comparison on two financial products, use the command `run-stock-comparator <base.symb> <comp.symb>`. For example, to compare the AEX index to the HSI index, enter the following command:
 ```bash
 $ run-stock-comparator AEX.INDX HSI.INDX
 ```
