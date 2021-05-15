@@ -126,8 +126,8 @@ class StockTrendComparison:
 
             index_difference = round(index_base - index_comp, 3)
 
-            symbol_lable = f"{symb_base} ({round(index_base, 2)}) x {symb_comp} ({round(index_comp, 2)})"
-            print(f"{symbol_lable} ==> corr: {v['correlation_score']}, diff: {index_difference}")
+            symbol_lable = f"{symb_base} (idx: {round(index_base, 2)}) x {symb_comp} (idx: {round(index_comp, 2)})"
+            print(f"{symbol_lable} ==> growth difference: {index_difference}, correlation: {v['correlation_score']}")
 
 
     def _set_daterange(self):
