@@ -3,6 +3,9 @@ baseurl: http://api.marketstack.com/v1/eod
 n_historical_weeks: 52
 compare_on: close
 
+# logging
+verbose: 1
+
 # base symbols
 symbols:
   stocks:
