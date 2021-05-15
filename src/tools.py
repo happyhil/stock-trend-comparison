@@ -13,8 +13,7 @@ class StockTrendComparison:
                  base_symbol=None,
                  comp_symbol=None,
                  symbol_list=None,
-                 compare_on='close',
-                 verbose=False):
+                 compare_on='close'):
         """"""
 
         self.apikey = apikey
@@ -32,19 +31,19 @@ class StockTrendComparison:
             except ValueError:
                 print("set sys.argv[1] and sys.argv[2] to symbols")
         self._set_daterange()
-        self.verbose = verbose
+        self.verbose = config['verbose']
 
 
     def load_data(self):
         """"""
 
-        if self.verbose:
+        if self.verbose == 1:
             print('=> Loading data')
         self.data = {}
 
         for sym in self.symbols:
 
-            if self.verbose:
+            if self.verbose == 2:
                 print(f'==> Loading {sym}')
 
             params = {
@@ -60,17 +59,17 @@ class StockTrendComparison:
             self.data[sym] = response_json['data']
 
             retreived_ratio = round((response_json['pagination']['count'] / response_json['pagination']['total']) * 100, 1)
-            if self.verbose:
+            if self.verbose == 2:
                 print(f"==> Loaded {retreived_ratio}% of available objects within query")
 
-        if self.verbose:
+        if self.verbose == 1:
             print('=> Loading data completed')
 
 
     def run_comparison(self):
         """"""
 
-        if self.verbose:
+        if self.verbose == 1:
             print('=> Running analysis')
 
         combinations = self._unique_combinations(self.data.keys())
@@ -79,7 +78,7 @@ class StockTrendComparison:
         self.result = {}
         for c in combinations:
 
-            if self.verbose:
+            if self.verbose == 2:
                 print(f'==> Comparing {c}')
 
             dates, closes = [], []
@@ -111,11 +110,14 @@ class StockTrendComparison:
                 }
             })
 
-        if self.verbose:
+        if self.verbose == 1:
             print('=> Analysis completed')
 
 
     def print_results(self):
+        """"""
+
+        print('==> Comparison output:')
 
         for k, v in self.result.items():
 
@@ -126,8 +128,8 @@ class StockTrendComparison:
 
             index_difference = round(index_base - index_comp, 3)
 
-            symbol_lable = f"{symb_base} (idx: {round(index_base, 2)}) x {symb_comp} (idx: {round(index_comp, 2)})"
-            print(f"{symbol_lable} ==> growth difference: {index_difference}, correlation: {v['correlation_score']}")
+            symbol_lable = f"{symb_base} (idx = {round(index_base, 2)}) x {symb_comp} (idx = {round(index_comp, 2)})"
+            print(f"===> {symbol_lable}: growth difference = {index_difference}, correlation = {v['correlation_score']}")
 
 
     def _set_daterange(self):
