@@ -1,4 +1,4 @@
-# Stock Trend Comparisons
+# Stock Trend Comparisons :chart:
 
 Stock Trend Comparisons is a library to compare two financial products on its prices over time. The tool helps to see whether two financial products are correlated, and which of the two products might be over- or under valued.
 
@@ -10,7 +10,7 @@ $ virtual -p python3 venv
 $ source venv/bin/activate
 ```
 
-Stock data is derived from marketstack.com 's API. In order to connect to this environment, copy the default `secret.yaml` file and enter your API key.
+Stock data are derived from [marketstack](https://marketstack.com/)'s API. In order to connect to this environment, copy the default `secret.yaml` file and enter your API key.
 ```bash
 $ cp secret.default.yaml secret.yaml
 $ nano secret.yaml
