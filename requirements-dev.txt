@@ -9,9 +9,11 @@ bleach==3.3.0
 certifi==2020.12.5
 cffi==1.14.5
 chardet==4.0.0
+click==8.0.0
 decorator==5.0.8
 defusedxml==0.7.1
 entrypoints==0.3
+flake8==3.9.2
 idna==2.10
 ipykernel==5.5.5
 ipython==7.23.1
@@ -32,6 +34,7 @@ jupyterlab-server==2.5.1
 jupyterlab-widgets==1.0.0
 MarkupSafe==2.0.0
 matplotlib-inline==0.1.2
+mccabe==0.6.1
 mistune==0.8.4
 nbclassic==0.2.8
 nbclient==0.5.3
@@ -48,7 +51,9 @@ pickleshare==0.7.5
 prometheus-client==0.10.1
 prompt-toolkit==3.0.18
 ptyprocess==0.7.0
+pycodestyle==2.7.0
 pycparser==2.20
+pyflakes==2.3.1
 Pygments==2.9.0
 pyparsing==2.4.7
 pyrsistent==0.17.3
