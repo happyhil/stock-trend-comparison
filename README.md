@@ -4,7 +4,7 @@ Stock Trend Comparisons is a library to compare financial products on its price 
 
 ## Installation
 
-Create a virtual environment in the root of the project. Make sure to use `python3.7` or higher.
+Preferably, create a virtual environment in the root of the project. Make sure to use `python3.7` or higher.
 ```bash
 virtualenv -p python3 venv
 source venv/bin/activate
@@ -44,7 +44,7 @@ run-stock-comparison
 
 By default, the following settings are applied.
 
-- Comparison period: last 365 days
+- Comparison period: last 52 weeks
 - Comparison on: close prices
 
 The settings are adjustable via the `config.yaml` file.
