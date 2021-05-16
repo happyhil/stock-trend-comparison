@@ -23,21 +23,21 @@ pip install -e .
 
 ## Usage
 
-To run a comparison on two financial products, use the command `run-stock-comparator <base.symb> <comp.symb>`. For example, to compare the AEX index to the HSI index, enter the following command:
+To run a comparison on two financial products, use the command `run-stock-comparator -b <basesymb> -c <compsymb>`. For example, to compare the AEX index to the HSI index, enter the following command:
 ```bash
-run-stock-comparator AEX.INDX HSI.INDX
+run-stock-comparison -b AEX.INDX -c HSI.INDX
 ```
 
 The tool will calculate the growth (as an index) between the starting- and end price for both products, the absolute difference between these growths, and the correlation between the prices of the two products over time.
 
-Alternatively, use one of the symbol lists available in the `config.yaml` file, which compares all listed products to each other. For example `stocks` or `indices`.
+Alternatively, use one of the symbol lists available in the `config.yaml` file, which compares all listed products to each other. For example the products listed under `stocks` or `indices`.
 ```bash
-run-stock-comparator indices
+run-stock-comparison -s indices
 ```
 
-Or run the comparator without using paramaters at all. In this case, the tool will run on a comparison all available symbols listed in the `config.yaml` file.
+Or run the comparison tool without using any paramaters at all. In this case, the tool will run a comparison on all available symbols listed in the `config.yaml` file.
 ```bash
-run-stock-comparator
+run-stock-comparison
 ```
 
 ## Settings
