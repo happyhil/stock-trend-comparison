@@ -1,3 +1,4 @@
+import sys
 import time
 import requests
 import numpy as np
@@ -5,7 +6,7 @@ from datetime import datetime, timedelta
 
 
 class StockTrendComparison:
-    """"""
+    """Class used to load and hold stock data, and to run a trend comparison over time"""
 
     def __init__(self,
                  apikey,
@@ -14,33 +15,60 @@ class StockTrendComparison:
                  comp_symbol=None,
                  symbol_list=None,
                  compare_on='close'):
-        """"""
+        """
+        Parameters
+        ----------
+        apikey : str
+            Account API key
+        config : dict
+            Project configuration dictionary loaded from config.yaml
+        base_symbol : str, optional
+            Base symbol (default is None)
+        comp_symbol : str, optional
+            Compare symbol (default is None)
+        symbol_list : str, optional
+            Reference to symbol list in config.yaml (default is None)
+        compare_on : str, optional
+            Data point on which prices will be compared (default is close)
+        """
 
         self.apikey = apikey
-        self.baseurl = config['baseurl'] # TODO: key direct
-        self.compare_key = config['compare_on'] # TODO: to config.yaml
+        self.baseurl = config['baseurl']
+        self.compare_key = config['compare_on']
         self.n_weeks = config['n_historical_weeks']
-        if symbol_list != None:
+        if symbol_list is not None:
             try:
                 self.symbols = config['symbols'][symbol_list].values()
-            except ValueError:
-                print("set sys.argv[1] to one of the symbol lists in config.yaml")
+            except KeyError:
+                print(f"Problem in symbol list:\n'{symbol_list}' not found in config,yaml, " \
+                "set symbol_list to one of the symbol lists in config.yaml, or set base_symbol " \
+                "and comp_symbol to symbols to compare")
+                sys.exit(1)
         else:
-            try:
-                self.symbols = [base_symbol, comp_symbol]
-            except ValueError:
-                print("set sys.argv[1] and sys.argv[2] to symbols")
+            self.symbols = [base_symbol, comp_symbol]
+            self.symbols = [s for s in self.symbols if s is not None]
+            if len(self.symbols) == 0:
+                print("Warning: no symbols set\n" \
+                "set symbol_list to one of the symbol lists in config.yaml, or set base_symbol " \
+                "and comp_symbol to symbols to compare")
         self._set_daterange()
         self.verbose = config['verbose']
 
+    def load_data(self, max_requests=5):
+        """
+        Load data for initialized symbols
 
-    def load_data(self):
-        """"""
+        Parameters
+        ----------
+        max_requests : int
+            Maximum number of requests allowed within same second (default is 5)
+        """
 
         if self.verbose == 1:
             print('=> Loading data')
         self.data = {}
 
+        starttime, request_pressure = time.time(), 0
         for sym in self.symbols:
 
             if self.verbose == 2:
@@ -56,18 +84,33 @@ class StockTrendComparison:
 
             response = requests.get(self.baseurl, params=params)
             response_json = response.json()
-            self.data[sym] = response_json['data']
+            try:
+                self.data[sym] = response_json['data']
+                retreived_ratio = round((response_json['pagination']['count'] / response_json['pagination']['total']) * 100, 1)
+                if self.verbose == 2:
+                    print(f"==> Loaded {retreived_ratio}% of available objects within query")
+            except KeyError:
+                print(f'Error: no data found for {sym}, check symbol')
+                if len(self.symbols) == 2:
+                    sys.exit(1)
 
-            retreived_ratio = round((response_json['pagination']['count'] / response_json['pagination']['total']) * 100, 1)
-            if self.verbose == 2:
-                print(f"==> Loaded {retreived_ratio}% of available objects within query")
+            endtime = time.time()
+            request_pressure += 1
+            if (endtime - starttime) >= 1:
+                starttime, request_pressure = time.time(), 0
+            elif request_pressure >= max_requests:
+                if self.verbose == 2:
+                    print('===> sleep for 5 seconds to prevent too much requests at the same time')
+                time.sleep(5)
+                starttime, request_pressure = time.time(), 0
+            else:
+                pass
 
         if self.verbose == 1:
             print('=> Loading data completed')
 
-
     def run_comparison(self):
-        """"""
+        """Run trend comparison on loaded data"""
 
         if self.verbose == 1:
             print('=> Running analysis')
@@ -113,9 +156,8 @@ class StockTrendComparison:
         if self.verbose == 1:
             print('=> Analysis completed')
 
-
     def print_results(self):
-        """"""
+        """Print comparison results"""
 
         print('==> Comparison output:')
 
@@ -131,9 +173,11 @@ class StockTrendComparison:
             symbol_lable = f"{symb_base} (idx = {round(index_base, 2)}) x {symb_comp} (idx = {round(index_comp, 2)})"
             print(f"===> {symbol_lable}: growth difference = {index_difference}, correlation = {v['correlation_score']}")
 
-
     def _set_daterange(self):
-        """"""
+        """
+        Set start and end date based on x historical days stated in config.yaml
+        Method finds valid first and last trading days (mon-fri)
+        """
 
         today = datetime.now().date()
         days_from_l_tradingday = max(1, (today.weekday() + 6) % 7 - 3)
@@ -145,9 +189,22 @@ class StockTrendComparison:
             'dateto': dateto.strftime('%Y-%m-%d'),
         }
 
-
     def _orient_to_date(self, datekey='date', dformat='%Y-%m-%dT%H:%M:%S+%f'):
-        """"""
+        """
+        Convert orientation of loaded data to dates
+
+        Parameters
+        ----------
+        datekey : str
+            Key in which date value exists (default is date)
+        dformat : str
+            Format of date values (default is %Y-%m-%dT%H:%M:%S+%f)
+
+        Returns
+        -------
+        dict
+            A dictionary orientated on dates instead of symbols
+        """
 
         output = {}
         for k, v in self.data.items():
@@ -159,9 +216,20 @@ class StockTrendComparison:
 
         return output
 
-
     def _unique_combinations(self, values):
-        """"""
+        """
+        Generate all unique combinations for list of values
+
+        Parameters
+        ----------
+        values : list
+            List of symbols
+
+        Returns
+        -------
+        list
+            A list all unique combinations
+        """
 
         combinations = []
         for basev in values:
