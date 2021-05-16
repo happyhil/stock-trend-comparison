@@ -9,6 +9,7 @@ setup(
     author_email='simon@simonvreugdenhil.com',
     packages=find_packages(),
     install_requires=[
+        'click==8.0.0',
         'numpy==1.20.3',
         'PyYAML==5.4.1',
         'requests==2.25.1',
