@@ -1,3 +1,4 @@
+import sys
 import time
 import requests
 import numpy as np
@@ -38,13 +39,18 @@ class StockTrendComparison:
         if symbol_list != None:
             try:
                 self.symbols = config['symbols'][symbol_list].values()
-            except ValueError:
-                print("set sys.argv[1] to one of the symbol lists in config.yaml")
+            except KeyError:
+                print(f"Problem in cmd line arguments:\n'{symbol_list}' not found in config,yaml, " \
+                "set sys.argv[1] to one of the symbol lists in config.yaml, or set sys.argv[1] " \
+                "and sys.argv[2] to symbols to compare")
+                sys.exit(1)
         else:
-            try:
-                self.symbols = [base_symbol, comp_symbol]
-            except ValueError:
-                print("set sys.argv[1] and sys.argv[2] to symbols")
+            self.symbols = [base_symbol, comp_symbol]
+            self.symbols = [s for s in self.symbols if s != None]
+            if len(self.symbols) == 0:
+                print("Warning: no symbols set\n" \
+                "set sys.argv[1] to one of the symbol lists in config.yaml, or set sys.argv[1] " \
+                "and sys.argv[2] to symbols to compare")
         self._set_daterange()
         self.verbose = config['verbose']
 
@@ -71,7 +77,11 @@ class StockTrendComparison:
 
             response = requests.get(self.baseurl, params=params)
             response_json = response.json()
-            self.data[sym] = response_json['data']
+            try:
+                self.data[sym] = response_json['data']
+            except KeyError:
+                print(f'No data found for {sym}, check symbol')
+                sys.exit(1)
 
             retreived_ratio = round((response_json['pagination']['count'] / response_json['pagination']['total']) * 100, 1)
             if self.verbose == 2:
