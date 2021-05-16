@@ -7,7 +7,10 @@ from src.tools import StockTrendComparison
 
 
 def main():
-    """"""
+    """
+    Main stock comparison execution
+    Console script: run-stock-comparison
+    """
 
     with open('config.yaml', 'r') as s:
         conf = yaml.load(s, yaml.SafeLoader)
