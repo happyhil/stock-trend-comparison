@@ -27,8 +27,7 @@ def main():
         elif len(sys.argv) == 2:
             comparator = StockTrendComparison(sec['apikey'],
                                               conf,
-                                              symbol_list=sys.argv[1],
-                                              verbose=True)
+                                              symbol_list=sys.argv[1])
 
         comparator.load_data()
         comparator.run_comparison()
@@ -38,8 +37,7 @@ def main():
         for b in conf['symbols'].keys():
             comparator = StockTrendComparison(sec['apikey'],
                                               conf,
-                                              symbol_list=b,
-                                              verbose=True)
+                                              symbol_list=b)
             comparator.load_data()
             comparator.run_comparison()
             comparator.print_results()
