@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 
 class StockTrendComparison:
-    """"""
+    """Class used to load and hold stock data, and to run a trend comparison over time"""
 
     def __init__(self,
                  apikey,
@@ -14,11 +14,26 @@ class StockTrendComparison:
                  comp_symbol=None,
                  symbol_list=None,
                  compare_on='close'):
-        """"""
+        """
+        Parameters
+        ----------
+        apikey : str
+            Account API key
+        config : dict
+            Project configuration dictionary loaded from config.yaml
+        base_symbol : str, optional
+            Base symbol (default is None)
+        comp_symbol : str, optional
+            Compare symbol (default is None)
+        symbol_list : str, optional
+            Reference to symbol list in config.yaml (default is None)
+        compare_on : str, optional
+            Data point on which prices will be compared (default is close)
+        """
 
         self.apikey = apikey
-        self.baseurl = config['baseurl'] # TODO: key direct
-        self.compare_key = config['compare_on'] # TODO: to config.yaml
+        self.baseurl = config['baseurl']
+        self.compare_key = config['compare_on']
         self.n_weeks = config['n_historical_weeks']
         if symbol_list != None:
             try:
@@ -35,7 +50,7 @@ class StockTrendComparison:
 
 
     def load_data(self):
-        """"""
+        """Load data for initialized symbols."""
 
         if self.verbose == 1:
             print('=> Loading data')
@@ -67,7 +82,7 @@ class StockTrendComparison:
 
 
     def run_comparison(self):
-        """"""
+        """Run trend comparison on loaded data"""
 
         if self.verbose == 1:
             print('=> Running analysis')
@@ -115,7 +130,7 @@ class StockTrendComparison:
 
 
     def print_results(self):
-        """"""
+        """Print comparison results"""
 
         print('==> Comparison output:')
 
@@ -133,7 +148,10 @@ class StockTrendComparison:
 
 
     def _set_daterange(self):
-        """"""
+        """
+        Set start and end date based on x historical days stated in config.yaml
+        Method finds valid first and last trading days (mon-fri)
+        """
 
         today = datetime.now().date()
         days_from_l_tradingday = max(1, (today.weekday() + 6) % 7 - 3)
@@ -147,7 +165,21 @@ class StockTrendComparison:
 
 
     def _orient_to_date(self, datekey='date', dformat='%Y-%m-%dT%H:%M:%S+%f'):
-        """"""
+        """
+        Convert orientation of loaded data on dates
+
+        Parameters
+        ----------
+        datekey : str
+            Key in which date value exist (default is date)
+        dformat : str
+            Format of date values (default is %Y-%m-%dT%H:%M:%S+%f)
+
+        Returns
+        -------
+        dict
+            A dictionary consisting of the same value objects, orientated on date instead of symbol
+        """
 
         output = {}
         for k, v in self.data.items():
@@ -161,7 +193,19 @@ class StockTrendComparison:
 
 
     def _unique_combinations(self, values):
-        """"""
+        """
+        Generate all unique combination for list of values
+
+        Parameters
+        ----------
+        values : list
+            List of values
+
+        Returns
+        -------
+        list
+            A list all unique combinations
+        """
 
         combinations = []
         for basev in values:
