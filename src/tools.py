@@ -56,7 +56,7 @@ class StockTrendComparison:
 
 
     def load_data(self):
-        """Load data for initialized symbols."""
+        """Load data for initialized symbols"""
 
         if self.verbose == 1:
             print('=> Loading data')
@@ -176,19 +176,19 @@ class StockTrendComparison:
 
     def _orient_to_date(self, datekey='date', dformat='%Y-%m-%dT%H:%M:%S+%f'):
         """
-        Convert orientation of loaded data on dates
+        Convert orientation of loaded data to dates
 
         Parameters
         ----------
         datekey : str
-            Key in which date value exist (default is date)
+            Key in which date value exists (default is date)
         dformat : str
             Format of date values (default is %Y-%m-%dT%H:%M:%S+%f)
 
         Returns
         -------
         dict
-            A dictionary consisting of the same value objects, orientated on date instead of symbol
+            A dictionary orientated on dates instead of symbols
         """
 
         output = {}
@@ -204,12 +204,12 @@ class StockTrendComparison:
 
     def _unique_combinations(self, values):
         """
-        Generate all unique combination for list of values
+        Generate all unique combinations for list of values
 
         Parameters
         ----------
         values : list
-            List of values
+            List of symbols
 
         Returns
         -------
