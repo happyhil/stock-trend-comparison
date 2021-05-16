@@ -23,16 +23,16 @@ pip install -e .
 
 ## Usage
 
-The tool calculates the growth (as an index) between the starting- and end price for both products, the absolute difference between these growths, and the correlation between the daily values over time.
+The tool calculates the growth (as an index) between the starting- and end price for the loaded products, the absolute growth differences, and the correlation between the daily values of the loaded products over time.
 
-To run a comparison on two financial products, use the command `run-stock-comparator -b <basesymb> -c <compsymb>`. For example, to compare the AEX index to the HSI index, enter the following command:
+To run a comparison on two financial products, use the command `run-stock-comparison -b <basesymb> -c <compsymb>`. For example, to compare the AEX index to the HSI index, enter the following command:
 ```bash
 run-stock-comparison -b AEX.INDX -c HSI.INDX
 ```
 
-Symbols can be looked up via the [search page](https://marketstack.com/search) of Marketstack.
+Symbols can be looked up through the [search page](https://marketstack.com/search) of Marketstack.
 
-Alternatively, use one of the symbol lists available in the `config.yaml` file, which compares all listed products to each other. For example the products listed under `stocks` or `indices`.
+Alternatively, use one of the symbol lists stated in the `config.yaml` file, which compares all listed products to each other. For example, load all products listed under `stocks` or `indices`.
 ```bash
 run-stock-comparison -s indices
 ```
