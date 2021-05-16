@@ -55,13 +55,21 @@ class StockTrendComparison:
         self.verbose = config['verbose']
 
 
-    def load_data(self):
-        """Load data for initialized symbols"""
+    def load_data(self, max_requests=5):
+        """
+        Load data for initialized symbols
+
+        Parameters
+        ----------
+        max_requests : int
+            Maximum number of requests allowed within same second (default is 5)
+        """
 
         if self.verbose == 1:
             print('=> Loading data')
         self.data = {}
 
+        starttime, request_pressure = time.time(), 0
         for sym in self.symbols:
 
             if self.verbose == 2:
@@ -79,13 +87,25 @@ class StockTrendComparison:
             response_json = response.json()
             try:
                 self.data[sym] = response_json['data']
+                retreived_ratio = round((response_json['pagination']['count'] / response_json['pagination']['total']) * 100, 1)
+                if self.verbose == 2:
+                    print(f"==> Loaded {retreived_ratio}% of available objects within query")
             except KeyError:
-                print(f'No data found for {sym}, check symbol')
-                sys.exit(1)
+                print(f'Error: no data found for {sym}, check symbol')
+                if len(self.symbols) == 2:
+                    sys.exit(1)
 
-            retreived_ratio = round((response_json['pagination']['count'] / response_json['pagination']['total']) * 100, 1)
-            if self.verbose == 2:
-                print(f"==> Loaded {retreived_ratio}% of available objects within query")
+            endtime = time.time()
+            request_pressure += 1
+            if (endtime - starttime) >= 1:
+                starttime, request_pressure = time.time(), 0
+            elif request_pressure >= max_requests:
+                if self.verbose == 2:
+                    print('===> sleep for 5 seconds to prevent too much requests at the same time')
+                time.sleep(5)
+                starttime, request_pressure = time.time(), 0
+            else:
+                pass
 
         if self.verbose == 1:
             print('=> Loading data completed')
