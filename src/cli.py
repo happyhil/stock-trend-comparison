@@ -1,15 +1,27 @@
 #!/usr/bin/env python
 
 
-import sys
+import click
 import yaml
 from src.tools import StockTrendComparison
 
 
-def main():
+@click.command()
+@click.option('-b', '--base', default=None, help='Base stock symbol.')
+@click.option('-c', '--comp', default=None, help='Stock symbol to compare.')
+@click.option('-s', '--syms', default=None, help='Value referring to one of the symbol lists in config.yaml.')
+def main(base, comp, syms):
     """
     Main stock comparison execution
-    Console script: run-stock-comparison
+
+    Parameters
+    ----------
+    base : str, optional
+        Base stock symbol (default is None)
+    comp : str, optional
+        Stock symbol to compare (default is None)
+    syms : str, optional
+        Value referring to one of the symbol lists in config.yaml (default is None)
     """
 
     with open('config.yaml', 'r') as s:
@@ -17,20 +29,18 @@ def main():
     with open('secret.yaml', 'r') as s:
         sec = yaml.load(s, yaml.SafeLoader)
 
-    if len(sys.argv) > 1:
+    if base is not None or comp is not None or syms is not None:
 
-        if len(sys.argv) == 3:
-            base = sys.argv[1]
-            comp = sys.argv[2]
+        if base is not None or comp is not None:
             comparator = StockTrendComparison(sec['apikey'],
                                               conf,
                                               base_symbol=base,
                                               comp_symbol=comp)
 
-        elif len(sys.argv) == 2:
+        if syms is not None:
             comparator = StockTrendComparison(sec['apikey'],
                                               conf,
-                                              symbol_list=sys.argv[1])
+                                              symbol_list=syms)
 
         comparator.load_data()
         comparator.run_comparison()

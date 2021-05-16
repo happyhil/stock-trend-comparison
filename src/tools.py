@@ -36,24 +36,23 @@ class StockTrendComparison:
         self.baseurl = config['baseurl']
         self.compare_key = config['compare_on']
         self.n_weeks = config['n_historical_weeks']
-        if symbol_list != None:
+        if symbol_list is not None:
             try:
                 self.symbols = config['symbols'][symbol_list].values()
             except KeyError:
-                print(f"Problem in cmd line arguments:\n'{symbol_list}' not found in config,yaml, " \
-                "set sys.argv[1] to one of the symbol lists in config.yaml, or set sys.argv[1] " \
-                "and sys.argv[2] to symbols to compare")
+                print(f"Problem in symbol list:\n'{symbol_list}' not found in config,yaml, " \
+                "set symbol_list to one of the symbol lists in config.yaml, or set base_symbol " \
+                "and comp_symbol to symbols to compare")
                 sys.exit(1)
         else:
             self.symbols = [base_symbol, comp_symbol]
-            self.symbols = [s for s in self.symbols if s != None]
+            self.symbols = [s for s in self.symbols if s is not None]
             if len(self.symbols) == 0:
                 print("Warning: no symbols set\n" \
-                "set sys.argv[1] to one of the symbol lists in config.yaml, or set sys.argv[1] " \
-                "and sys.argv[2] to symbols to compare")
+                "set symbol_list to one of the symbol lists in config.yaml, or set base_symbol " \
+                "and comp_symbol to symbols to compare")
         self._set_daterange()
         self.verbose = config['verbose']
-
 
     def load_data(self, max_requests=5):
         """
@@ -110,7 +109,6 @@ class StockTrendComparison:
         if self.verbose == 1:
             print('=> Loading data completed')
 
-
     def run_comparison(self):
         """Run trend comparison on loaded data"""
 
@@ -158,7 +156,6 @@ class StockTrendComparison:
         if self.verbose == 1:
             print('=> Analysis completed')
 
-
     def print_results(self):
         """Print comparison results"""
 
@@ -176,7 +173,6 @@ class StockTrendComparison:
             symbol_lable = f"{symb_base} (idx = {round(index_base, 2)}) x {symb_comp} (idx = {round(index_comp, 2)})"
             print(f"===> {symbol_lable}: growth difference = {index_difference}, correlation = {v['correlation_score']}")
 
-
     def _set_daterange(self):
         """
         Set start and end date based on x historical days stated in config.yaml
@@ -192,7 +188,6 @@ class StockTrendComparison:
             'datefrom': datefrom.strftime('%Y-%m-%d'),
             'dateto': dateto.strftime('%Y-%m-%d'),
         }
-
 
     def _orient_to_date(self, datekey='date', dformat='%Y-%m-%dT%H:%M:%S+%f'):
         """
@@ -220,7 +215,6 @@ class StockTrendComparison:
                 output[date].update({k: i[self.compare_key]})
 
         return output
-
 
     def _unique_combinations(self, values):
         """
