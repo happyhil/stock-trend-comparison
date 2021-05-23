@@ -51,7 +51,6 @@ class StockTrendComparison:
         self.daterange = common.n_weeks_to_daterange(config['n_historical_weeks'])
         self.verbose = config['verbose']
 
-
     def run_comparison(self):
         """Run trend comparison on loaded data"""
 
