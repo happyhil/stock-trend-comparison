@@ -14,6 +14,6 @@ setup(
         'requests==2.25.1',
     ],
     entry_points={
-        'console_scripts': ['run-stock-comparison=src.cli:main']
+        'console_scripts': ['run-stock-comparison=src.cli:relative_comparison']
     },
 )
