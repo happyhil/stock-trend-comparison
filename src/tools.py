@@ -13,8 +13,7 @@ class StockTrendComparison:
                  config,
                  base_symbol=None,
                  comp_symbol=None,
-                 symbol_list=None,
-                 compare_on='close'):
+                 symbol_list=None):
         """
         Parameters
         ----------
