@@ -3,14 +3,14 @@
 
 import click
 import yaml
-from src.tools import StockTrendComparison
+from src import tools
 
 
 @click.command()
-@click.option('-b', '--base', default=None, help='Base stock symbol.')
+@click.option('-b', '--base', default=None, help='Base stock symbol to check on.')
 @click.option('-c', '--comp', default=None, help='Stock symbol to compare.')
 @click.option('-s', '--syms', default=None, help='Value referring to one of the symbol lists in config.yaml.')
-def main(base, comp, syms):
+def relative_comparison(base, comp, syms):
     """
     Main stock comparison execution
 
@@ -32,29 +32,28 @@ def main(base, comp, syms):
     if base is not None or comp is not None or syms is not None:
 
         if base is not None or comp is not None:
-            comparator = StockTrendComparison(sec['apikey'],
-                                              conf,
-                                              base_symbol=base,
-                                              comp_symbol=comp)
+            comparator = tools.StockTrendComparison(sec['apikey'],
+                                                    conf,
+                                                    base_symbol=base,
+                                                    comp_symbol=comp)
 
         if syms is not None:
-            comparator = StockTrendComparison(sec['apikey'],
-                                              conf,
-                                              symbol_list=syms)
-
-        comparator.load_data()
+            comparator = tools.StockTrendComparison(sec['apikey'],
+                                                    conf,
+                                                    symbol_list=syms)
         comparator.run_comparison()
         comparator.print_results()
 
     else:
         for b in conf['symbols'].keys():
-            comparator = StockTrendComparison(sec['apikey'],
-                                              conf,
-                                              symbol_list=b)
-            comparator.load_data()
+            comparator = tools.StockTrendComparison(sec['apikey'],
+                                                    conf,
+                                                    symbol_list=b)
             comparator.run_comparison()
             comparator.print_results()
 
 
-if __name__ == '__main__':
-    main()
+@click.command()
+@click.option('-b', '--base', default=None, help='Base stock symbol to check on.')
+def weekonweek_comparison(base):
+    pass
