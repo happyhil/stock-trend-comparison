@@ -1,6 +1,6 @@
 # configurations
 baseurl: http://api.marketstack.com/v1/eod
-n_historical_weeks: 52
+n_historical_weeks: 10
 compare_on: close
 
 # logging
