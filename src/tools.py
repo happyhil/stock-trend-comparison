@@ -41,16 +41,16 @@ class StockTrendComparison:
                 self.symbols = config['symbols'][symbol_list].values()
             except KeyError:
                 print(f"Problem in symbol list:\n'{symbol_list}' not found in config,yaml, " \
-                "set symbol_list to one of the symbol lists in config.yaml, or set base_symbol " \
-                "and comp_symbol to symbols to compare")
+                      "set symbol_list to one of the symbol lists in config.yaml, or set base_symbol " \
+                      "and comp_symbol to symbols to compare")
                 sys.exit(1)
         else:
             self.symbols = [base_symbol, comp_symbol]
             self.symbols = [s for s in self.symbols if s is not None]
             if len(self.symbols) == 0:
                 print("Warning: no symbols set\n" \
-                "set symbol_list to one of the symbol lists in config.yaml, or set base_symbol " \
-                "and comp_symbol to symbols to compare")
+                      "set symbol_list to one of the symbol lists in config.yaml, or set base_symbol " \
+                      "and comp_symbol to symbols to compare")
         self._set_daterange()
         self.verbose = config['verbose']
 
@@ -86,7 +86,8 @@ class StockTrendComparison:
             response_json = response.json()
             try:
                 self.data[sym] = response_json['data']
-                retreived_ratio = round((response_json['pagination']['count'] / response_json['pagination']['total']) * 100, 1)
+                retreived_ratio = round(
+                    (response_json['pagination']['count'] / response_json['pagination']['total']) * 100, 1)
                 if self.verbose == 2:
                     print(f"==> Loaded {retreived_ratio}% of available objects within query")
             except KeyError:
@@ -162,7 +163,6 @@ class StockTrendComparison:
         print('==> Comparison output:')
 
         for k, v in self.result.items():
-
             symb_base = k.split('-')[0]
             index_base = v['index'][symb_base]
             symb_comp = k.split('-')[1]
@@ -171,7 +171,8 @@ class StockTrendComparison:
             index_difference = round(index_base - index_comp, 3)
 
             symbol_lable = f"{symb_base} (idx = {round(index_base, 2)}) x {symb_comp} (idx = {round(index_comp, 2)})"
-            print(f"===> {symbol_lable}: growth difference = {index_difference}, correlation = {v['correlation_score']}")
+            print(
+                f"===> {symbol_lable}: growth difference = {index_difference}, correlation = {v['correlation_score']}")
 
     def _set_daterange(self):
         """
@@ -181,8 +182,8 @@ class StockTrendComparison:
 
         today = datetime.now().date()
         days_from_l_tradingday = max(1, (today.weekday() + 6) % 7 - 3)
-        dateto = today - timedelta(days = days_from_l_tradingday)
-        datefrom = dateto - timedelta(days = 7 * self.n_weeks - 1)
+        dateto = today - timedelta(days=days_from_l_tradingday)
+        datefrom = dateto - timedelta(days=7 * self.n_weeks - 1)
 
         self.daterange = {
             'datefrom': datefrom.strftime('%Y-%m-%d'),
