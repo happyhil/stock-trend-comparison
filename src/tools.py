@@ -1,8 +1,8 @@
 import sys
-import time
-import requests
 import numpy as np
-from datetime import datetime, timedelta
+from datetime import datetime
+from src.connect import DataLoad
+from src import common
 
 
 class StockTrendComparison:
@@ -27,12 +27,10 @@ class StockTrendComparison:
             Compare symbol (default is None)
         symbol_list : str, optional
             Reference to symbol list in config.yaml (default is None)
-        compare_on : str, optional
-            Data point on which prices will be compared (default is close)
         """
 
         self.apikey = apikey
-        self.baseurl = config['baseurl']
+        self.config = config
         self.compare_key = config['compare_on']
         self.n_weeks = config['n_historical_weeks']
         if symbol_list is not None:
@@ -50,79 +48,26 @@ class StockTrendComparison:
                 print("Warning: no symbols set\n" \
                       "set symbol_list to one of the symbol lists in config.yaml, or set base_symbol " \
                       "and comp_symbol to symbols to compare")
-        self._set_daterange()
+        self.daterange = common.n_weeks_to_daterange(config['n_historical_weeks'])
         self.verbose = config['verbose']
-
-    def load_data(self, max_requests=5):
-        """
-        Load data for initialized symbols
-
-        Parameters
-        ----------
-        max_requests : int
-            Maximum number of requests allowed within same second (default is 5)
-        """
-
-        if self.verbose == 1:
-            print('=> Loading data')
-        self.data = {}
-
-        starttime, request_pressure = time.time(), 0
-        for sym in self.symbols:
-
-            if self.verbose == 2:
-                print(f'==> Loading {sym}')
-
-            params = {
-                'access_key': self.apikey,
-                'symbols': sym,
-                'date_from': self.daterange['datefrom'],
-                'date_to': self.daterange['dateto'],
-                'limit': round(self.n_weeks * 6)
-            }
-
-            response = requests.get(self.baseurl, params=params)
-            response_json = response.json()
-            try:
-                self.data[sym] = response_json['data']
-                retreived_ratio = round(
-                    (response_json['pagination']['count'] / response_json['pagination']['total']) * 100, 1)
-                if self.verbose == 2:
-                    print(f"==> Loaded {retreived_ratio}% of available objects within query")
-            except KeyError:
-                print(f'Error: no data found for {sym}, check symbol')
-                if len(self.symbols) == 2:
-                    sys.exit(1)
-
-            endtime = time.time()
-            request_pressure += 1
-            if (endtime - starttime) >= 1:
-                starttime, request_pressure = time.time(), 0
-            elif request_pressure >= max_requests:
-                if self.verbose == 2:
-                    print('===> sleep for 5 seconds to prevent too much requests at the same time')
-                time.sleep(5)
-                starttime, request_pressure = time.time(), 0
-            else:
-                pass
-
-        if self.verbose == 1:
-            print('=> Loading data completed')
 
     def run_comparison(self):
         """Run trend comparison on loaded data"""
 
-        if self.verbose == 1:
+        loader = DataLoad(self.apikey, self.config)
+        data = loader.get_dailies(self.symbols, self.daterange)
+
+        if self.verbose >= 1:
             print('=> Running analysis')
 
-        combinations = self._unique_combinations(self.data.keys())
-        daydata = self._orient_to_date()
+        combinations = self._unique_combinations(data.keys())
+        daydata = self._orient_to_date(data)
 
         self.result = {}
         for c in combinations:
 
-            if self.verbose == 2:
-                print(f'==> Comparing {c}')
+            if self.verbose >= 2:
+                print(f'==> Comparing {c[0]} to {c[1]}')
 
             dates, closes = [], []
             for k, v in daydata.items():
@@ -153,7 +98,7 @@ class StockTrendComparison:
                 }
             })
 
-        if self.verbose == 1:
+        if self.verbose >= 1:
             print('=> Analysis completed')
 
     def print_results(self):
@@ -173,28 +118,14 @@ class StockTrendComparison:
             print(
                 f"===> {symbol_lable}: growth difference = {index_difference}, correlation = {v['correlation_score']}")
 
-    def _set_daterange(self):
-        """
-        Set start and end date based on x historical days stated in config.yaml
-        Method finds valid first and last trading days (mon-fri)
-        """
-
-        today = datetime.now().date()
-        days_from_l_tradingday = max(1, (today.weekday() + 6) % 7 - 3)
-        dateto = today - timedelta(days=days_from_l_tradingday)
-        datefrom = dateto - timedelta(days=7 * self.n_weeks - 1)
-
-        self.daterange = {
-            'datefrom': datefrom.strftime('%Y-%m-%d'),
-            'dateto': dateto.strftime('%Y-%m-%d'),
-        }
-
-    def _orient_to_date(self, datekey='date', dformat='%Y-%m-%dT%H:%M:%S+%f'):
+    def _orient_to_date(self, data, datekey='date', dformat='%Y-%m-%dT%H:%M:%S+%f'):
         """
         Convert orientation of loaded data to dates
 
         Parameters
         ----------
+        data : dict
+            Raw retrieved data dictionary from Marketstack API
         datekey : str
             Key in which date value exists (default is date)
         dformat : str
@@ -207,7 +138,7 @@ class StockTrendComparison:
         """
 
         output = {}
-        for k, v in self.data.items():
+        for k, v in data.items():
             for i in v:
                 date = datetime.strptime(i[datekey], dformat).strftime('%Y-%m-%d')
                 if date not in output.keys():

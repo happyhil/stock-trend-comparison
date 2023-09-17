@@ -1,10 +1,10 @@
 # configurations
-baseurl: http://api.marketstack.com/v1/eod
-n_historical_weeks: 10
+baseurl: https://api.marketstack.com
+n_historical_weeks: 102
 compare_on: close
 
 # logging
-verbose: 1
+verbose: 2
 
 # base symbols
 symbols:
